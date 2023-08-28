@@ -1,0 +1,80 @@
+import tensorflow as tf
+from tensorflow.keras.datasets import mnist
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Flatten, Dense
+
+# Função para construir o modelo da rede neural para detecção de intrusões
+def build_intrusion_detection_model(input_dim):
+    model = Sequential([
+        Dense(128, activation='relu', input_shape=(input_dim,)),
+        Dense(64, activation='relu'),
+        Dense(1, activation='sigmoid')  # Saída binária: normal ou anômalo
+    ])
+    model.compile(optimizer='adam', loss='binary_crossentropy')
+    return model
+
+# Carregar dados de treinamento e teste (normal e anômalo)
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
+x_train, x_test = x_train / 255.0, x_test / 255.0
+
+# Construir o modelo da rede neural
+model_neural = Sequential([
+    Flatten(input_shape=(28, 28)),
+    Dense(128, activation='relu'),
+    Dense(10, activation='softmax')
+])
+model_neural.compile(optimizer='adam',
+                     loss='sparse_categorical_crossentropy',
+                     metrics=['accuracy'])
+
+# Treinar o modelo
+model_neural.fit(x_train, y_train, epochs=5)
+
+# Avaliar o modelo no conjunto de teste
+test_loss, test_acc = model_neural.evaluate(x_test, y_test, verbose=2)
+print('\nTest accuracy:', test_acc)
+
+# Simulação de IPs suspeitos
+suspicious_ips = ["192.168.0.100", "10.0.0.2"]  # Exemplo de IPs suspeitos
+
+# Bloqueio de IPs suspeitos (exemplo usando regras de firewall)
+def block_ip(ip):
+    print(f"Blocking IP: {ip} using firewall rule...")
+
+for ip in suspicious_ips:
+    block_ip(ip)
+
+# Simulação de função de detecção de atividades suspeitas
+def has_suspicious_activity(predictions, vulnerabilities):
+    # Lógica para detectar atividades suspeitas
+    return True
+
+# Simulação de função para enviar alertas
+def send_alert(message):
+    print("Alert:", message)
+
+# Construir o modelo da rede neural para detecção de intrusões
+input_dim = x_train.shape[1]  # Defina o número de entradas da rede neural
+model_intrusion = build_intrusion_detection_model(input_dim)
+
+# Treinar o modelo
+model_intrusion.fit(x_train, y_train, epochs=10)
+
+# Avaliar o modelo no conjunto de teste
+loss = model_intrusion.evaluate(x_test, y_test)
+
+# Detectar intrusões em novos dados
+new_data = x_test[:10]  # Exemplo de novos dados para detecção
+predictions = model_intrusion.predict(new_data)
+
+# Simulação de função para verificar vulnerabilidades
+def scan_for_vulnerabilities():
+    # Lógica para verificar vulnerabilidades
+    return []
+
+# Monitoramento de Vulnerabilidades
+vulnerabilities = scan_for_vulnerabilities()
+
+# Configurar alertas para atividades suspeitas
+if has_suspicious_activity(predictions, vulnerabilities):
+    send_alert("Detected suspicious activity in the system!")
